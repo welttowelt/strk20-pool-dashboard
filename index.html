@@ -4,11 +4,11 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="strk20 privacy pool — total value shielded">
 <meta property="og:description" content="live onchain kpis for the strk20 privacy pool on starknet · aggregate metrics only">
-<meta property="og:image" content="https://welttowelt.github.io/strk20-pool-dashboard/share_card.png">
-<meta property="og:url" content="https://welttowelt.github.io/strk20-pool-dashboard/">
+<meta property="og:image" content="https://strk20-shinobi-kpi.pages.dev/share_card.png">
+<meta property="og:url" content="https://strk20-shinobi-kpi.pages.dev/">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="strk20 privacy pool — total value shielded">
-<meta name="twitter:image" content="https://welttowelt.github.io/strk20-pool-dashboard/share_card.png">
+<meta name="twitter:image" content="https://strk20-shinobi-kpi.pages.dev/share_card.png">
 <style>
 :root{--bg:#0C0A18;--inset:#13102A;--panel:#151225;--plum:#1E1A30;--line:#2A2640;--white:#FFFFFF;--mist:#B0ACC0;--dust:#7A7490;--ember:#E86A2D}
 *{box-sizing:border-box}
@@ -24,6 +24,9 @@ header{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;
 .ranges button{background:none;border:0;border-bottom:2px solid transparent;color:var(--dust);font:inherit;font-size:12px;padding:6px 12px;cursor:pointer;letter-spacing:.4px}
 .ranges button:hover{color:var(--mist)}
 .ranges button.on{color:var(--white);border-bottom-color:var(--ember)}
+.hright{display:flex;flex-direction:column;align-items:flex-end;gap:10px}
+#shareX{background:none;border:1px solid var(--line);color:var(--mist);font:inherit;font-size:12px;padding:6px 14px;cursor:pointer;letter-spacing:.3px}
+#shareX:hover{border-color:var(--ember);color:var(--white)}
 .banner{background:var(--panel);border:1px solid var(--line);border-left:2px solid var(--ember);padding:16px;margin-top:22px}
 .banner .row{display:flex;gap:44px;margin-top:8px;flex-wrap:wrap}
 .k{color:var(--dust);font-size:11px;letter-spacing:.4px;text-transform:lowercase}
@@ -69,7 +72,7 @@ svg{width:100%;height:auto;display:block}
 </style></head><body>
 <header class="rise">
   <div><h1>strk20 privacy pool — kpi tracker</h1><div class="sub" style="margin-top:6px" id="subline"></div></div>
-  <div class="ranges" id="ranges"></div>
+  <div class="hright"><button id="shareX" title="share the tvl on x">share ↗</button><div class="ranges" id="ranges"></div></div>
 </header>
 <div id="banner"></div>
 <div class="tiles" id="tiles"></div>
@@ -292,6 +295,10 @@ function renderStatic(){
 let _restoreDay = null;
 try { const sv = JSON.parse(sessionStorage.getItem('strk20kpi') || 'null'); if (sv && typeof sv === 'object') { _restoreDay = sv.day; sv.day = null; Object.assign(state, sv); } } catch(e){}
 renderStatic(); renderRanges(); renderBanner(); renderTiles(); renderHero(); renderGrid();
+$('#shareX').onclick = () => {   // one-tap share: prefill X with the live tvl + the link (which unfurls the card)
+  const text = `strk20 privacy pool — ${fmt(S.tvl_usd,1)} total value shielded · ${fmt(S.cum_unique_shielders)} wallets · live onchain`;
+  window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent('https://strk20-shinobi-kpi.pages.dev/'), '_blank', 'noopener');
+};
 if (_restoreDay) selectDay(_restoreDay);   // reopen the day drill-down panel (toggles null -> day)
 try { const y = +sessionStorage.getItem('strk20kpi_y') || 0; if (y) scrollTo(0, y); } catch(e){}
 addEventListener('beforeunload', () => { try { sessionStorage.setItem('strk20kpi', JSON.stringify(state)); sessionStorage.setItem('strk20kpi_y', String(scrollY)); } catch(e){} });
